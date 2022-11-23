@@ -1,5 +1,5 @@
 use tbx_essential;
-use tbx_essential::text2::message;
+use tbx_essential::text::message;
 
 fn main() {
     println!("Hello, {}", message::hello());
