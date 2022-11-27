@@ -11,6 +11,10 @@ no practical tools will be implemented in the next dozen months.
 * Minimal footprints
 * Compatibility (because this project is experimental)
 
+## Design/Development priority
+
+* Stability & Productivity >> Performance, Latency, Footprint
+
 ## Target platform
 
 This project will be developed and tested on the following platforms.
