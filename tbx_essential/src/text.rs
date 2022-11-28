@@ -1,3 +1,4 @@
-pub mod message;
 pub mod pattern;
-pub mod string;
+pub mod essential;
+pub mod token;
+
