@@ -1,0 +1,9 @@
+
+[workspace]
+members = [
+    "tbx",
+    "tbx_essential",
+    "tbx_foundation",
+    "tbx_model",
+    "tbx_operation",
+]

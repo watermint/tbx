@@ -1,0 +1,7 @@
+[package]
+name = "tbx_operation"
+version = "0.1.0"
+edition = "2021"
+description = "This package is the collection of business logics"
+
+[dependencies]

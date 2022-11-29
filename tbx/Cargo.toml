@@ -1,0 +1,11 @@
+[package]
+name = "tbx"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+homepage = "https://github.com/watermint/tbx"
+description = "toolbox (dev) - re-architecting command line tools [watermint/toolbox](https://github.com/watermint/toolbox)"
+
+
+[dependencies]
+tbx_essential = { path = "../tbx_essential" }
