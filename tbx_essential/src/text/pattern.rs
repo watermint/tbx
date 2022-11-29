@@ -1,1 +1,1 @@
-pub mod case;
+pub mod naming;
