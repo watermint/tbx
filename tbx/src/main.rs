@@ -9,8 +9,9 @@ fn main() {
     let v = version();
     let w = v.substring(2, 3).unwrap();
     println!(
-        "tbx version {}, essential {}",
+        "tbx version {}, essential {:?}",
         w,
-        tbx_essential::version()
+//        tbx_essential::version()
+        "000012".parse::<i64>(),
     );
 }

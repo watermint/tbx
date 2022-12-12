@@ -28,6 +28,17 @@ pub trait AsciiTokenizer {
     fn tokenize_ascii_alpha_num_to_lower<'a>(&self) -> Vec<Cow<'a, str>>;
 }
 
+pub trait AsciiMatcher {
+    /// Returns true when the string is ASCII numeric string.
+    fn is_ascii_numeric(&self) -> bool;
+
+    /// Returns true when the string is ASCII alphabetic string.
+    fn is_ascii_alphabetic(&self) -> bool;
+
+    /// Returns true when the string is ASCII alpha-numeric string.
+    fn is_ascii_alphanumeric(&self) -> bool;
+}
+
 fn next_alpha_num_token(s: &str) -> Option<(usize, usize, &str)> {
     match s.chars().position(|c| c.is_ascii_alphanumeric()) {
         None => None,
@@ -91,9 +102,23 @@ impl AsciiTokenizer for str {
     }
 }
 
+impl AsciiMatcher for str {
+    fn is_ascii_numeric(&self) -> bool {
+        self.chars().all(|c| c.is_ascii_digit())
+    }
+
+    fn is_ascii_alphabetic(&self) -> bool {
+        self.chars().all(|c| c.is_ascii_alphabetic())
+    }
+
+    fn is_ascii_alphanumeric(&self) -> bool {
+        self.chars().all(|c| c.is_ascii_alphanumeric())
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use crate::text::token::ascii::AsciiTokenizer;
+    use crate::text::token::ascii::{AsciiMatcher, AsciiTokenizer};
 
     #[test]
     fn test_tokenize_alpha_num() {
@@ -135,5 +160,38 @@ mod tests {
     fn test_tokenize_ascii_alpha_num_to_lower() {
         assert_eq!(vec!["powered", "by", "rust", "lang", "version1", "65", "0"],
                    "  Powered by RustLang version1.65.0".tokenize_ascii_alpha_num_to_lower());
+    }
+
+    #[test]
+    fn test_is_ascii_numeric() {
+        assert!("1234".is_ascii_numeric());
+        assert!("0".is_ascii_numeric());
+        assert!(!"abc".is_ascii_numeric());
+        assert!(!"abc123".is_ascii_numeric());
+        assert!(!"１２３".is_ascii_numeric());
+    }
+
+    #[test]
+    fn test_is_ascii_alphabetic() {
+        assert!("abc".is_ascii_alphabetic());
+        assert!("ABC".is_ascii_alphabetic());
+        assert!("Abc".is_ascii_alphabetic());
+        assert!("aBC".is_ascii_alphabetic());
+        assert!("a".is_ascii_alphabetic());
+        assert!(!"a123".is_ascii_alphabetic());
+        assert!(!"123".is_ascii_alphabetic());
+    }
+
+    #[test]
+    fn test_is_ascii_alphanumeric() {
+        assert!("abc".is_ascii_alphanumeric());
+        assert!("ABC".is_ascii_alphanumeric());
+        assert!("Abc".is_ascii_alphanumeric());
+        assert!("aBC".is_ascii_alphanumeric());
+        assert!("a".is_ascii_alphanumeric());
+        assert!("a123".is_ascii_alphanumeric());
+        assert!("123".is_ascii_alphanumeric());
+        assert!(!"１２３".is_ascii_alphanumeric());
+        assert!(!"エービーシー".is_ascii_alphanumeric());
     }
 }
