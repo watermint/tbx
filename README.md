@@ -28,7 +28,7 @@ but we will not be able to provide support for any problems that may arise.
 
 # Package structure
 
-* *tbx_essentials*: The essential libraries. 
+* *tbx_essentials*: The essential libraries. Wraps other crate library interfaces.
 * *tbx_foundation*: The framework of the application.
 * *tbx_model*: Domain model.
 * *tbx_operation*: Business logic.

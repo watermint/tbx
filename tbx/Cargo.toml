@@ -9,3 +9,6 @@ description = "toolbox (dev) - re-architecting command line tools [watermint/too
 
 [dependencies]
 tbx_essential = { path = "../tbx_essential" }
+tbx_foundation = { path = "../tbx_foundation" }
+tbx_model = { path = "../tbx_model" }
+tbx_operation = { path = "../tbx_operation" }

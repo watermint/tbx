@@ -1,31 +1,35 @@
+use std::cmp::Ordering;
+use std::fmt;
+use std::fmt::Formatter;
+
+use build::Build;
+use prerelease::PreRelease;
+
+use crate::text::essential::StringEssential;
+use crate::text::version::semantic::error::{ParseError, ParseErrorReason, ParseInvalidPart};
+use crate::text::version::semantic::error::ParseErrorReason::InvalidPattern;
+
 mod build;
 mod prerelease;
 mod parse;
 mod compare;
 mod error;
 
-use std::cmp::Ordering;
-use std::fmt;
-use std::fmt::Formatter;
-use build::Build;
-use prerelease::PreRelease;
-use crate::text::essential::StringEssential;
-use crate::text::version::semantic::error::{ParseError, ParseErrorReason, ParseInvalidPart};
-use crate::text::version::semantic::error::ParseErrorReason::InvalidPattern;
-
 /// Structure for Semantic versioning elements.
-/// see: https://semver.org for more detail about semantic versioning.
+/// see: <https://semver.org> for more detail about semantic versioning.
+#[derive(Debug, Clone)]
 pub struct Version<'a> {
-    major: u64,
-    minor: u64,
-    patch: u64,
-    pre_release: Option<PreRelease<'a>>,
-    build: Option<Build<'a>>,
+    pub major: u64,
+    pub minor: u64,
+    pub patch: u64,
+    pub pre_release: Option<PreRelease<'a>>,
+    pub build: Option<Build<'a>>,
 }
 
+// Constructors
 impl<'a> Version<'a> {
     /// Creates version 0.0.0 instance.
-    pub fn zero() -> Version<'a> {
+    pub fn zero() -> Self {
         Version {
             major: 0,
             minor: 0,
@@ -36,7 +40,7 @@ impl<'a> Version<'a> {
     }
 
     /// Create new version instance with specified version.
-    pub fn new(major: u64, minor: u64, patch: u64) -> Version<'a> {
+    pub fn new(major: u64, minor: u64, patch: u64) -> Self {
         Version {
             major,
             minor,
@@ -45,7 +49,11 @@ impl<'a> Version<'a> {
             build: None,
         }
     }
+}
 
+// Parsers
+impl<'a> Version<'a> {
+    /// Parses the string and returns the version.
     pub fn parse(ver: &str, strict: bool) -> Result<Version, ParseError> {
         // <valid semver> ::= <version core>
         //                  | <version core> "-" <pre-release>
@@ -78,6 +86,21 @@ impl<'a> Version<'a> {
                 build: None,
             })
         }
+    }
+
+    /// Parses the string and returns the version.
+    /// If an error occurs, return the specified version.
+    pub fn parse_or(ver: &'a str, major: u64, minor: u64, patch: u64) -> Version<'a> {
+        match Self::parse(ver, false) {
+            Ok(v) => v,
+            _ => Self::new(major, minor, patch)
+        }
+    }
+
+    /// Parses the string and returns the version.
+    /// If an error occurs, return the zero version.
+    pub fn parse_or_zero(ver: &'a str) -> Version<'a> {
+        Self::parse_or(ver, 0, 0, 0)
     }
 
     fn parse_pre_release_and_build(ver_reminder: &str, strict: bool) -> Result<(Option<PreRelease>, Option<Build>), ParseError> {
@@ -183,7 +206,7 @@ impl<'a> PartialOrd<Self> for Version<'a> {
     /// Numeric identifiers always have lower precedence than non-numeric identifiers.
     /// A larger set of pre-release fields has a higher precedence than a smaller set, if all of the preceding identifiers are equal.
     /// Example: 1.0.0-alpha < 1.0.0-alpha.1 < 1.0.0-alpha.beta < 1.0.0-beta < 1.0.0-beta.2 < 1.0.0-beta.11 < 1.0.0-rc.1 < 1.0.0.
-    /// (description CC-BY 3.0, https://semver.org)
+    /// (description CC-BY 3.0, <https://semver.org>)
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         let cmp_major = self.major.cmp(&other.major);
         if cmp_major != Ordering::Equal {
@@ -211,9 +234,9 @@ impl<'a> PartialOrd<Self> for Version<'a> {
 
 #[cfg(test)]
 mod version {
-    use crate::text::version::semantic::Version;
     use crate::text::version::semantic::build::Build;
     use crate::text::version::semantic::prerelease::PreRelease;
+    use crate::text::version::semantic::Version;
 
     #[test]
     fn test_zero() {

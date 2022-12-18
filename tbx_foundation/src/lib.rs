@@ -1,14 +1,9 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
-}
+use tbx_essential::text::version::semantic::Version;
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+/// Returns version of `tbx_foundation` module.
+pub fn version<'a>() -> Version<'a> {
+    match option_env!("CARGO_PKG_VERSION") {
+        None => Version::zero(),
+        Some(v) => Version::parse_or_zero(v),
     }
 }

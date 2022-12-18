@@ -1,11 +1,12 @@
+use std::cmp::Ordering;
 use std::fmt;
 use std::fmt::Formatter;
-use std::cmp::Ordering;
+
 use crate::text::version::semantic::{compare, parse};
 use crate::text::version::semantic::error::{ParseError, ParseErrorReason, ParseInvalidPart};
 
 /// Dot separated pre-release identifies (e.g. `Alpha1`, `Alpha.beta`, `Beta.2`)
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct PreRelease<'a> {
     pre_release: Vec<&'a str>,
 }
@@ -132,6 +133,7 @@ impl<'a> PartialOrd<Self> for PreRelease<'a> {
 #[cfg(test)]
 mod pre_release {
     use std::cmp::Ordering;
+
     use crate::text::version::semantic::prerelease::PreRelease;
 
     #[test]

@@ -7,7 +7,7 @@ use crate::text::version::semantic::parse;
 
 /// Build metadata.
 /// Examples: `1.0.0-alpha+001`, `1.0.0+20130313144700`, `1.0.0-beta+exp.sha.5114f85`, `1.0.0+21AF26D3-117B344092BD`.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Build<'a> {
 // ```
 // <build> ::= <dot-separated build identifiers>

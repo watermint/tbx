@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+
 use crate::text::essential::StringEssential;
 
 pub trait AsciiTokenizer {
@@ -12,18 +13,18 @@ pub trait AsciiTokenizer {
     fn tokenize_ascii_alpha_num(&self) -> Vec<&str>;
 
     /// Split into alpha-numeric tokens, then change all cases to capital.
-    /// Other behavior is same as [`tokenize_ascii_alpha_num`]
+    /// Other behavior is same as [`Self::tokenize_ascii_alpha_num`]
     /// Example: `"Powered by RustLang"` -> `["POWERED", "BY", "RUST", "LANG"]`
     fn tokenize_ascii_alpha_num_to_capital<'a>(&self) -> Vec<Cow<'a, str>>;
 
     /// Split into alpha-numeric tokens, then change all cases to upper case for the first char, then
     /// rest of characters to lower case.
-    /// Other behavior is same as [`tokenize_ascii_alpha_num`]
+    /// Other behavior is same as [`Self::tokenize_ascii_alpha_num`]
     /// Example: `"Powered by RustLang"` -> `["Powered", "By", "Rust", "Lang"]`
     fn tokenize_ascii_alpha_num_to_first_upper<'a>(&self) -> Vec<Cow<'a, str>>;
 
     /// Split into alpha-numeric tokens, then change all cases to lower case.
-    /// Other behavior is same as [`tokenize_ascii_alpha_num`]
+    /// Other behavior is same as [`Self::tokenize_ascii_alpha_num`]
     /// Example: `"Powered by RustLang"` -> `["powered", "by", "rust", "lang"]`
     fn tokenize_ascii_alpha_num_to_lower<'a>(&self) -> Vec<Cow<'a, str>>;
 }

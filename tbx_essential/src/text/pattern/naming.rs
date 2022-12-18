@@ -1,4 +1,5 @@
 use std::borrow::Cow;
+
 use crate::text::essential::StringEssential;
 use crate::text::token::ascii::AsciiTokenizer;
 

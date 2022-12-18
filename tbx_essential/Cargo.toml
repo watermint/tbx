@@ -1,7 +1,8 @@
 [package]
 name = "tbx_essential"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "essential library modules. Most module/functions are wrappers of external libraries."
 
 [dependencies]
+rand = "0.8"

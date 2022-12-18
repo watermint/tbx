@@ -5,3 +5,4 @@ edition = "2021"
 description = "Domain model definition and implementation"
 
 [dependencies]
+tbx_essential = { path = "../tbx_essential" }

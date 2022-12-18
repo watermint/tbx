@@ -5,3 +5,4 @@ edition = "2021"
 description = "This package is the collection of business logics"
 
 [dependencies]
+tbx_essential = { path = "../tbx_essential" }
