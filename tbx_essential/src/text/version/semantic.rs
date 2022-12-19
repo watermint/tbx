@@ -232,6 +232,22 @@ impl<'a> PartialOrd<Self> for Version<'a> {
     }
 }
 
+/// Parse & return package version.
+/// This function will return additional information in the future,
+/// such as build numbers from CI.
+///
+/// ```rust
+/// use tbx_essential::text::version::semantic;
+///
+/// let v = semantic::package_version(option_env!("CARGO_PKG_VERSION"));
+/// ```
+pub fn package_version(v: Option<&str>) -> Version {
+    match v {
+        None => Version::zero(),
+        Some(v) => Version::parse_or_zero(v),
+    }
+}
+
 #[cfg(test)]
 mod version {
     use crate::text::version::semantic::build::Build;

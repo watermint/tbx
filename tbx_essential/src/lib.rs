@@ -2,7 +2,7 @@ use crate::text::version::semantic::Version;
 
 pub mod fs;
 pub mod text;
-mod number;
+pub mod number;
 
 /// Returns version of `tbx_essential` module.
 pub fn version<'a>() -> Version<'a> {
