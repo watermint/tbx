@@ -3,7 +3,7 @@ use std::borrow::Cow;
 use crate::text::essential::StringEssential;
 use crate::text::token::ascii::AsciiTokenizer;
 
-pub trait Naming {
+pub trait Ascii {
     /// Convert string to CamelCase (upper case).
     /// Non ASCII alphabet or number characters are ignored.
     /// This function returns always upper case for the first char of the first token.
@@ -56,7 +56,7 @@ pub trait Naming {
 }
 
 
-impl Naming for str {
+impl Ascii for str {
     fn to_ascii_camel_upper<'a>(&self) -> Cow<'a, str> {
         Cow::Owned(self.tokenize_ascii_alpha_num_to_first_upper().join(""))
     }
@@ -97,7 +97,7 @@ impl Naming for str {
 
 #[cfg(test)]
 mod tests {
-    use crate::text::pattern::naming::Naming;
+    use crate::text::pattern::ascii::Ascii;
 
     #[test]
     fn test_to_ascii_camel_upper() {

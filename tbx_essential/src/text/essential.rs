@@ -5,6 +5,9 @@ pub trait StringEssential {
 
     /// Returns substring of this string to the end as valid UTF-8 string.
     fn substring_to_end(&self, start: usize) -> Option<&str>;
+
+    /// Count target character
+    fn count_char(&self, x: char) -> usize;
 }
 
 impl StringEssential for str {
@@ -30,6 +33,10 @@ impl StringEssential for str {
             let s = self.chars().take(start).map(|c| c.len_utf8()).sum();
             self.get(s..)
         }
+    }
+
+    fn count_char(&self, x: char) -> usize {
+        self.chars().map(|t| (t == x) as usize).sum()
     }
 }
 
@@ -57,5 +64,12 @@ mod tests {
         assert_eq!("🍣と🍶", "今日は🍣と🍶".substring_to_end(3).unwrap()); // Non plane 0 chars
         assert_eq!(None, "HelloWorld".substring_to_end(10));
         assert_eq!(None, "HelloWorld".substring_to_end(11));
+    }
+
+    #[test]
+    fn test_count_char() {
+        assert_eq!("Hello World".count_char('o'), 2);
+        assert_eq!("Hello World".count_char('O'), 0);
+        assert_eq!("Hello World".count_char('H'), 1);
     }
 }

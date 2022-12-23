@@ -1,3 +1,5 @@
+extern crate core;
+
 use crate::text::version::semantic::Version;
 
 pub mod fs;
