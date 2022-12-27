@@ -70,7 +70,7 @@ pub struct ParseError<'a> {
 }
 
 impl<'a> ParseError<'a> {
-    pub fn from(part: ParseInvalidPart, reason: ParseErrorReason<'a>) -> ParseError<'a> {
+    pub fn new(part: ParseInvalidPart, reason: ParseErrorReason<'a>) -> ParseError<'a> {
         ParseError {
             part,
             reason,
@@ -95,11 +95,11 @@ mod errors {
     fn test_display_parse_error() {
         assert_eq!("invalid character '*' found in part PreRelease",
                    format!("{}",
-                           ParseError::from(ParseInvalidPart::PreRelease,
-                                            ParseErrorReason::InvalidChar(ParseInvalidChar::from('*')))));
+                           ParseError::new(ParseInvalidPart::PreRelease,
+                                           ParseErrorReason::InvalidChar(ParseInvalidChar::from('*')))));
         assert_eq!("invalid character '*' found",
                    format!("{}",
-                           ParseError::from(ParseInvalidPart::Other,
-                                            ParseErrorReason::InvalidChar(ParseInvalidChar::from('*')))));
+                           ParseError::new(ParseInvalidPart::Other,
+                                           ParseErrorReason::InvalidChar(ParseInvalidChar::from('*')))));
     }
 }

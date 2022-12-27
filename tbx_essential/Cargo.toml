@@ -6,3 +6,4 @@ description = "essential library modules. Most module/functions are wrappers of 
 
 [dependencies]
 rand = "0.8"
+regex = "1"

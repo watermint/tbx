@@ -36,20 +36,20 @@ pub fn parse_numeric_identifier(pre: &str, strict: bool) -> Result<&str, ParseEr
         } else {
             // Reject leading 0
             match pre.chars().nth(0) {
-                None => Err(ParseError::from(
+                None => Err(ParseError::new(
                     ParseInvalidPart::NumericIdentifier,
                     ParseErrorReason::InvalidPattern,
                 )),
                 Some(f) =>
                     if f == '0' {
-                        Err(ParseError::from(
+                        Err(ParseError::new(
                             ParseInvalidPart::NumericIdentifier,
                             ParseErrorReason::NumberIdentifierShouldNotHaveLeadingZero,
                         ))
                     } else if pre.is_ascii_numeric() {
                         Ok(pre)
                     } else {
-                        Err(ParseError::from(
+                        Err(ParseError::new(
                             ParseInvalidPart::NumericIdentifier,
                             ParseErrorReason::InvalidChar(ParseInvalidChar::from(f)),
                         ))
@@ -61,7 +61,7 @@ pub fn parse_numeric_identifier(pre: &str, strict: bool) -> Result<&str, ParseEr
         if pre.is_ascii_numeric() {
             Ok(pre)
         } else {
-            Err(ParseError::from(
+            Err(ParseError::new(
                 ParseInvalidPart::NumericIdentifier,
                 ParseErrorReason::NonAsciiAlphaNumString(ParseNonAsciiAlphaNumString::from(pre)),
             ))
@@ -86,7 +86,7 @@ pub fn parse_alphanumeric_identifier(pre: &str, strict: bool) -> Result<&str, Pa
             if pos_non_digit + pos_identifier_char == pre_len {
                 Ok(pre)
             } else {
-                Err(ParseError::from(ParseInvalidPart::AlphaNumericIdentifier, ParseErrorReason::InvalidPattern))
+                Err(ParseError::new(ParseInvalidPart::AlphaNumericIdentifier, ParseErrorReason::InvalidPattern))
             }
         } else {
             let pos_identifier1 = pre_with_guard.chars().position(|c| !parse_is_identifier_character(c)).unwrap_or(0);
@@ -94,13 +94,13 @@ pub fn parse_alphanumeric_identifier(pre: &str, strict: bool) -> Result<&str, Pa
             let pos_identifier2 = pre_with_guard.chars().skip(pos_identifier1 + pos_non_digit1).position(|c| !parse_is_identifier_character(c)).unwrap_or(0);
 
             if pos_identifier1 == 0 {
-                Err(ParseError::from(ParseInvalidPart::AlphaNumericIdentifier, ParseErrorReason::InvalidPattern))
+                Err(ParseError::new(ParseInvalidPart::AlphaNumericIdentifier, ParseErrorReason::InvalidPattern))
             } else if pos_identifier1 + pos_non_digit1 == pre_len && pos_non_digit1 == 1 {
                 Ok(pre)
             } else if pos_identifier1 + pos_non_digit1 + pos_identifier2 == pre_len && pos_non_digit1 == 1 {
                 Ok(pre)
             } else {
-                Err(ParseError::from(ParseInvalidPart::AlphaNumericIdentifier, ParseErrorReason::InvalidPattern))
+                Err(ParseError::new(ParseInvalidPart::AlphaNumericIdentifier, ParseErrorReason::InvalidPattern))
             }
         }
     } else {
@@ -109,8 +109,8 @@ pub fn parse_alphanumeric_identifier(pre: &str, strict: bool) -> Result<&str, Pa
         if pos_non_id == pre_len {
             Ok(pre)
         } else {
-            Err(ParseError::from(ParseInvalidPart::AlphaNumericIdentifier,
-                                 ParseErrorReason::NonAsciiAlphaNumString(ParseNonAsciiAlphaNumString::from(pre))))
+            Err(ParseError::new(ParseInvalidPart::AlphaNumericIdentifier,
+                                ParseErrorReason::NonAsciiAlphaNumString(ParseNonAsciiAlphaNumString::from(pre))))
         }
     }
 }

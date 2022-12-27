@@ -114,7 +114,7 @@ impl<'a> Version<'a> {
                         let b = Build::parse(v_build, strict)?;
                         Ok((Some(p), Some(b)))
                     }
-                    _ => Err(ParseError::from(ParseInvalidPart::PrereleaseOrBuild, ParseErrorReason::InvalidPattern)),
+                    _ => Err(ParseError::new(ParseInvalidPart::PrereleaseOrBuild, ParseErrorReason::InvalidPattern)),
                 }
             (Some('-'), None) =>
                 match ver_reminder.substring_to_end(1) {
@@ -122,7 +122,7 @@ impl<'a> Version<'a> {
                         let p = PreRelease::parse(v_pre_release, strict)?;
                         Ok((Some(p), None))
                     }
-                    _ => Err(ParseError::from(ParseInvalidPart::PreRelease, ParseErrorReason::InvalidPattern))
+                    _ => Err(ParseError::new(ParseInvalidPart::PreRelease, ParseErrorReason::InvalidPattern))
                 },
             (Some('+'), Some(p_plus)) =>
                 match ver_reminder.substring_to_end(p_plus + 1) {
@@ -130,9 +130,9 @@ impl<'a> Version<'a> {
                         let b = Build::parse(v_build, strict)?;
                         Ok((None, Some(b)))
                     }
-                    _ => Err(ParseError::from(ParseInvalidPart::Build, ParseErrorReason::InvalidPattern))
+                    _ => Err(ParseError::new(ParseInvalidPart::Build, ParseErrorReason::InvalidPattern))
                 },
-            _ => Err(ParseError::from(ParseInvalidPart::PrereleaseOrBuild, ParseErrorReason::InvalidPattern))
+            _ => Err(ParseError::new(ParseInvalidPart::PrereleaseOrBuild, ParseErrorReason::InvalidPattern))
         }
     }
 
@@ -143,7 +143,7 @@ impl<'a> Version<'a> {
         let pos_dot1 = ver.chars().position(|c| c == '.').unwrap_or(0);
         let pos_dot2 = ver.chars().skip(pos_dot1 + 1).position(|c| c == '.').unwrap_or(0);
         if pos_dot1 == 0 || pos_dot2 == 0 {
-            Err(ParseError::from(ParseInvalidPart::VersionNumber, InvalidPattern))
+            Err(ParseError::new(ParseInvalidPart::VersionNumber, InvalidPattern))
         } else {
             let pos_reminder = ver_with_guard.chars().skip(pos_dot1 + pos_dot2 + 2).position(|c| !c.is_ascii_digit()).unwrap_or(0);
             let part_major = ver.substring(0, pos_dot1);
@@ -161,10 +161,10 @@ impl<'a> Version<'a> {
                         (Ok(v_major), Ok(v_minor), Ok(v_patch), None) =>
                             Ok((v_major, v_minor, v_patch, None)),
                         _ =>
-                            Err(ParseError::from(ParseInvalidPart::VersionNumber, ParseErrorReason::InvalidPattern)),
+                            Err(ParseError::new(ParseInvalidPart::VersionNumber, ParseErrorReason::InvalidPattern)),
                     }
                 }
-                _ => Err(ParseError::from(ParseInvalidPart::VersionNumber, ParseErrorReason::InvalidPattern)),
+                _ => Err(ParseError::new(ParseInvalidPart::VersionNumber, ParseErrorReason::InvalidPattern)),
             }
         }
     }

@@ -211,7 +211,7 @@ mod tests {
                 abort_count += 1;
                 assert!(abort_count < abort_limit, "limit {}, count {}", abort_limit, abort_count);
                 if abort_limit < abort_count {
-                    return Cow::Owned("".to_string());
+                    return Cow::Owned(String::from(""));
                 }
             }
             q

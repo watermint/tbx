@@ -66,7 +66,7 @@ impl<'a> PreRelease<'a> {
         } else if let Ok(id) = parse::parse_numeric_identifier(pre, strict) {
             Ok(id)
         } else {
-            Err(ParseError::from(ParseInvalidPart::PreRelease, ParseErrorReason::InvalidPattern))
+            Err(ParseError::new(ParseInvalidPart::PreRelease, ParseErrorReason::InvalidPattern))
         }
     }
 

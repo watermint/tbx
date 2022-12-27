@@ -23,24 +23,24 @@ pub struct Build<'a> {
 
 impl<'a> Build<'a> {
     /// Parse build part.
-    pub fn parse(build: &str, strict: bool) -> Result<Build, ParseError> {
+    pub fn parse(build: &'a str, strict: bool) -> Result<Build<'a>, ParseError> {
         let b = Self::parse_build(build, strict)?;
-        Ok(Build {
+        Ok(Self {
             build: b,
         })
     }
 
-    fn parse_build_identifier(build: &str, strict: bool) -> Result<&str, ParseError> {
+    fn parse_build_identifier(build: &'a str, strict: bool) -> Result<&'a str, ParseError> {
         if let Ok(id) = parse::parse_alphanumeric_identifier(build, strict) {
             Ok(id)
         } else if build.is_ascii_numeric() {
             Ok(build)
         } else {
-            Err(ParseError::from(ParseInvalidPart::Build, ParseErrorReason::InvalidPattern))
+            Err(ParseError::new(ParseInvalidPart::Build, ParseErrorReason::InvalidPattern))
         }
     }
 
-    fn parse_build(build: &str, strict: bool) -> Result<Vec<&str>, ParseError> {
+    fn parse_build(build: &'a str, strict: bool) -> Result<Vec<&str>, ParseError> {
         // <build> ::= <dot-separated build identifiers>
         //
         // <dot-separated build identifiers> ::= <build identifier>
