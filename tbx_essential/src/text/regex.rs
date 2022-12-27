@@ -246,3 +246,20 @@ mod tests_replacer {
         assert_eq!(re2.replace_all_noexpansion("ABC_123_DEF_789", "[$Num]"), "ABC_[$Num]_DEF_[$Num]");
     }
 }
+
+impl Splitter for Regex {
+    fn split<'r, 't>(&'r self, text: &'t str) -> Split<'r, 't> {
+        Split::new(self.re.split(text))
+    }
+}
+
+#[cfg(test)]
+mod tests_splitter {
+    use crate::text::regex::{Regex, Splitter};
+
+    #[test]
+    fn test_split() {
+        let re = Regex::parse(r"=_=").unwrap();
+        assert_eq!(vec!["a", "b", "c"],  re.split("a=_=b=_=c").collect::<Vec<&str>>())
+    }
+}
