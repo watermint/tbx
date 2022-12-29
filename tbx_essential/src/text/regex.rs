@@ -20,7 +20,7 @@ pub trait Matcher {
     /// If no match exists, then None is returned.
     fn find_first<'t>(&self, text: &'t str) -> Option<Match<'t>>;
 
-    /// Same as [`find`] but start the search at the given offset.
+    /// Same as [`Matcher::find_first`] but start the search at the given offset.
     fn find_at<'t>(&self, text: &'t str, offset: usize) -> Option<Match<'t>>;
 
     /// Returns an iterator for each successive non-overlapping match in text,
@@ -42,7 +42,7 @@ pub trait Replacer {
     /// Replaces the leftmost-first match with the replacement provided.
     fn replace_first<'t>(&self, text: &'t str, replace: &str) -> Cow<'t, str>;
 
-    /// Same as [`replace_first`] but will not expanding $name to their corresponding capture.
+    /// Same as [`Replacer::replace_first`] but will not expanding $name to their corresponding capture.
     fn replace_first_noexpansion<'t>(&self, text: &'t str, replace: &str) -> Cow<'t, str>;
 
     /// Replaces all non-overlapping matches in text with the replacement provided.
