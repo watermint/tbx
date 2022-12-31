@@ -1,4 +1,9 @@
-pub mod pattern;
 pub mod essential;
+pub mod hex;
+pub mod parser;
+pub mod pattern;
+pub mod random;
+pub mod regex;
 pub mod token;
-
+pub mod uuid;
+pub mod version;

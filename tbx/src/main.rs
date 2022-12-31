@@ -1,16 +1,18 @@
 use tbx_essential;
-use tbx_essential::text::essential::StringEssential;
+use tbx_essential::text::version::semantic;
+use tbx_essential::text::version::semantic::Version;
 
-fn version() -> &'static str {
-    option_env!("CARGO_PKG_VERSION").unwrap_or("0.0.0")
+fn version<'a>() -> Version<'a> {
+    semantic::package_version(option_env!("CARGO_PKG_VERSION"))
 }
 
 fn main() {
-    let v = version();
-    let w = v.substring(2, 3).unwrap();
     println!(
-        "tbx version {}, essential {}",
-        w,
-        tbx_essential::version()
+        "tbx version {}, essential {}, foundation {}, model {}, operation {}",
+        version(),
+        tbx_essential::version(),
+        tbx_foundation::version(),
+        tbx_model::version(),
+        tbx_operation::version(),
     );
 }

@@ -1,0 +1,15 @@
+{
+  "rust-num": {
+    "repository": "https://github.com/rust-num/num-traits",
+    "licenses": {
+      "MIT": "https://github.com/rust-num/num-traits/blob/master/LICENSE-MIT",
+      "Apache2.0": "https://github.com/rust-num/num-traits/blob/master/LICENSE-APACHE"
+    },
+    "reasons": [
+      {
+        "module": "number::primitive",
+        "reason": "library is heavily inspired by this library."
+      }
+    ]
+  }
+}

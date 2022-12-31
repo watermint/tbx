@@ -1,6 +1,14 @@
+
+use crate::text::version::semantic::Version;
+
 pub mod fs;
 pub mod text;
+pub mod number;
 
-pub fn version() -> &'static str {
-    option_env!("CARGO_PKG_VERSION").unwrap_or("0.0.0")
+/// Returns version of `tbx_essential` module.
+pub fn version<'a>() -> Version<'a> {
+    match option_env!("CARGO_PKG_VERSION") {
+        None => Version::zero(),
+        Some(v) => Version::parse_or_zero(v),
+    }
 }

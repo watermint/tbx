@@ -1,7 +1,8 @@
 [package]
 name = "tbx_foundation"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 description = "Foundation library of tbx."
 
 [dependencies]
+tbx_essential = { path = "../tbx_essential" }
