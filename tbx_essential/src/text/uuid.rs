@@ -63,7 +63,7 @@ pub enum Variant {
 }
 
 /// UUID (A Universally Unique IDentifier).
-/// RFC 4122: <https://datatracker.ietf.org/doc/html/rfc4122>
+/// RFC 4122: <https://www.rfc-editor.org/rfc/rfc4122>
 pub trait Layout {
     /// Returns UUID format (in lower case) defined in RFC 4122 like `123e4567-e89b-12d3-a456-426655440000`.
     fn uuid_lower<'a>(&self) -> Cow<'a, str>;

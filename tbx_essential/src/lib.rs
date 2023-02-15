@@ -1,14 +1,9 @@
-
-use crate::text::version::semantic::Version;
+use crate::text::version::semantic::{package_version, Version};
 
 pub mod fs;
-pub mod text;
 pub mod number;
+pub mod text;
+pub mod time;
 
 /// Returns version of `tbx_essential` module.
-pub fn version<'a>() -> Version<'a> {
-    match option_env!("CARGO_PKG_VERSION") {
-        None => Version::zero(),
-        Some(v) => Version::parse_or_zero(v),
-    }
-}
+pub fn version<'a>() -> Version<'a> { package_version(option_env!("CARGO_PKG_VERSION")) }
