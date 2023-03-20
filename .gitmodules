@@ -1,0 +1,3 @@
+[submodule "tbx_model/resources/dropbox/api_spec"]
+	path = tbx_model/resources/dropbox/api_spec
+	url = https://github.com/dropbox/dropbox-api-spec.git

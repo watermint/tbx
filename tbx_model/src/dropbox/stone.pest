@@ -1,0 +1,205 @@
+SYNTAX_KEYWORDS = _{
+    "namespace" |
+    "import"|
+    "alias" |
+    "struct" |
+    "route" |
+    "union_closed" |
+    "union" |
+    "example" |
+    "attrs" |
+    "null" |
+    "true" |
+    "false" |
+    "Bytes" |
+    "Boolean" |
+    "Float32" |
+    "Float64" |
+    "Int32" |
+    "Int64" |
+    "UInt32" |
+    "UInt64" |
+    "String" |
+    "Timestamp" |
+    "Void"
+}
+
+identity_raw = @{ (ASCII_ALPHA | "_" ) ~ (ASCII_ALPHANUMERIC | "_" )+ }
+identity = @{
+    (!SYNTAX_KEYWORDS ~ identity_raw) |
+    (SYNTAX_KEYWORDS ~ (ASCII_ALPHANUMERIC | "_" )+)
+}
+
+identity_ref = @{ (identity ~ "." ~ identity | identity )}
+
+identity_route_with_version = @{ identity_raw ~ (":" ~ version)? }
+identity_route = @{
+    (identity_raw ~ ("/" ~ identity_route_with_version)+) |
+    identity_route_with_version
+}
+
+version = @{ !"0" ~ ASCII_DIGIT* }
+
+literal_bool = { "true" | "false" }
+literal_string_char = @{
+    !("\"" | "\\") ~ ANY
+    | "\\" ~ ("u" ~ ASCII_HEX_DIGIT{4})
+    | "\\" ~ ANY
+}
+literal_string_inner = @{ literal_string_char* }
+literal_string = ${ "\"" ~ literal_string_inner ~ "\"" }
+literal_int = { "-"? ~ ASCII_DIGIT+ }
+literal_float = { "-"?
+    ~ ("0" | ASCII_NONZERO_DIGIT ~ ASCII_DIGIT*)
+    ~ ("." ~ ASCII_DIGIT*)?
+    ~ (^"e" ~ ("+" | "-")? ~ ASCII_DIGIT+)?
+}
+literal_null = { "null" }
+literal_list = { "[" ~ (literal_or_identity ~ ","?)* ~ "]" }
+literal = {
+    literal_bool |
+    literal_float |
+    literal_int |
+    literal_null |
+    literal_list |
+    literal_string
+}
+literal_or_identity = { literal | identity_ref }
+
+type_bytes = { "Bytes" }
+type_float_condition = {
+    ("max_value" ~ "=" ~ literal_float ) |
+    ("min_value" ~ "=" ~ literal_float )
+}
+type_float = {
+    ( "Float32" | "Float64" ) ~
+    ("(" ~ (type_float_condition ~ ","?)+ ~ ")")?
+}
+type_integer_condition = {
+    ("max_value" ~ "=" ~ literal_int ) |
+    ("min_value" ~ "=" ~ literal_int )
+}
+type_int = {
+    ("Int32" | "Int64" | "UInt32" | "UInt64" ) ~
+    ("(" ~ (type_integer_condition ~ ","?)+ ~ ")")?
+}
+type_string_condition = {
+    ("pattern" ~ "=" ~ literal_string) |
+    ("min_length" ~ "=" ~ literal_int) |
+    ("max_length" ~ "=" ~ literal_int)
+}
+type_string = {
+    "String" ~
+    ("(" ~ (type_string_condition ~ ","?)+ ~ ")")?
+}
+type_timestamp = {
+    "Timestamp" ~
+    ("(" ~ literal_string ~ ")")?
+}
+type_primitive = {
+    type_bytes |
+    "Boolean" |
+    type_float |
+    type_int |
+    type_string |
+    type_timestamp |
+    "Void"
+}
+type_attributes = { "(" ~ (identity ~ "=" ~ literal_or_identity ~ ","?)+ ~ ")" }
+type_list_condition = {
+    ("min_items" ~ "=" ~ literal_int) |
+    ("max_items" ~ "=" ~ literal_int)
+}
+type_list = {
+    "List" ~
+    "(" ~ type_all_optional ~ ("," ~ type_list_condition)* ~ ")"
+}
+type_all_optional = { type_all ~ "?"? }
+type_all = { type_primitive | type_list | identity_ref}
+
+spec_example = { "example" ~ identity ~ NEWLINE_OR_COMMENT ~
+    COMMENT_OR_EMPTY* ~
+    spec_doc? ~
+    COMMENT_OR_EMPTY* ~
+    (identity ~ "=" ~ literal_or_identity ~ NEWLINE_OR_COMMENT)*
+}
+spec_doc = { literal_string ~ NEWLINE_OR_COMMENT }
+spec_union = { ("union_closed" | "union") ~ identity ~ spec_union_extends? ~ NEWLINE_OR_COMMENT ~
+    COMMENT_OR_EMPTY* ~
+    spec_doc? ~
+    (spec_union_void_tag | spec_union_tag | COMMENT_OR_EMPTY)* ~
+    (spec_example | COMMENT_OR_EMPTY)*
+}
+spec_union_extends = { "extends" ~ identity_ref }
+
+spec_union_void_tag = { identity ~ "*"? ~ NEWLINE_OR_COMMENT ~ COMMENT_OR_EMPTY* ~ spec_doc? }
+spec_union_tag = { identity ~ type_all_optional ~ spec_union_field_default? ~ NEWLINE_OR_COMMENT ~ COMMENT_OR_EMPTY* ~ spec_doc? }
+spec_union_field_default = { "=" ~ literal_or_identity }
+
+spec_struct = { "struct" ~ identity ~ spec_struct_extends? ~ NEWLINE_OR_COMMENT ~
+    COMMENT_OR_EMPTY* ~
+    spec_doc? ~
+    COMMENT_OR_EMPTY* ~
+    spec_struct_subtypes? ~
+    (COMMENT_OR_EMPTY | spec_struct_field)* ~
+    (COMMENT_OR_EMPTY | spec_example)*
+}
+spec_struct_extends = { "extends" ~ identity_ref }
+spec_struct_subtype_field = { identity ~ identity_ref ~ NEWLINE_OR_COMMENT }
+spec_struct_subtypes = { ("union_closed" | "union") ~ NEWLINE_OR_COMMENT ~ spec_struct_subtype_field+ }
+spec_struct_field_union = {
+    ("union_closed" | "union") ~ NEWLINE_OR_COMMENT ~
+    spec_doc? ~
+    (spec_union_void_tag | spec_union_tag | COMMENT_OR_EMPTY)+ ~
+    (spec_example | COMMENT_OR_EMPTY)*
+}
+spec_struct_field = {
+    identity ~ type_all_optional ~ spec_struct_field_default? ~ NEWLINE_OR_COMMENT ~
+    COMMENT_OR_EMPTY* ~
+    spec_doc? ~
+    COMMENT_OR_EMPTY* ~
+    spec_struct_field_union?
+}
+spec_struct_field_default = { "=" ~ literal_or_identity }
+
+spec_route = { "route" ~ identity_route ~
+    (":" ~ version)? ~
+    "(" ~ type_all ~ "," ~ type_all ~ ","~ type_all ~ ")" ~
+    ("deprecated" ~ ("by" ~ identity_route)?)? ~ NEWLINE_OR_COMMENT ~
+    COMMENT_OR_EMPTY* ~
+    spec_doc? ~
+    COMMENT_OR_EMPTY* ~
+    spec_route_attrs?
+}
+spec_route_attr = { identity ~ "=" ~ literal ~ NEWLINE_OR_COMMENT }
+spec_route_attrs = { "attrs" ~ NEWLINE_OR_COMMENT ~
+    (COMMENT_OR_EMPTY | spec_route_attr)+
+}
+
+spec_namespace = {
+    "namespace" ~ identity ~ NEWLINE_OR_COMMENT ~
+    COMMENT_OR_EMPTY* ~
+    spec_doc?
+}
+spec_import = { "import" ~ identity ~ NEWLINE_OR_COMMENT }
+spec_alias = { "alias" ~ identity ~ "=" ~ type_all_optional ~ NEWLINE_OR_COMMENT ~
+    COMMENT_OR_EMPTY* ~
+    spec_doc?
+}
+
+
+spec_definition = { spec_import | spec_alias | spec_union | spec_struct | spec_route | COMMENT_OR_EMPTY }
+
+spec = {
+    SOI ~
+    COMMENT_OR_EMPTY* ~
+    spec_namespace ~
+    spec_definition+ ~
+    EOI
+}
+
+COMMENT_LINE = _{ "#" ~ (!NEWLINE ~ ANY)* ~ NEWLINE }
+COMMENT_OR_EMPTY = _{ NEWLINE | COMMENT_LINE }
+NEWLINE_OR_COMMENT = _{ COMMENT_LINE | NEWLINE }
+
+WHITESPACE = _{ " " | "\t" }

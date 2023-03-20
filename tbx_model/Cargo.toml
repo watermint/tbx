@@ -6,3 +6,5 @@ description = "Domain model definition and implementation"
 
 [dependencies]
 tbx_essential = { path = "../tbx_essential" }
+pest = "2"
+pest_derive = "2"
